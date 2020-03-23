@@ -1,0 +1,29 @@
+language: generic
+sudo: required
+services:
+  - docker
+
+# Build temporary development test image
+before_install:
+  - docker build -t crazypikis/react-test -f ./client/Dockerfile.dev ./client
+
+# Run tests on the dev image
+script:
+  - docker run -e CI=true crazypikis/react-test npm test
+
+# If no test errors, create all production builds
+after_success:
+  - docker build -t crazypikis/multi-client ./client
+  - docker build -t crazypikis/multi-nginx ./nginx
+  - docker build -t crazypikis/multi-server ./server
+  - docker build -t crazypikis/multi-worker ./worker
+
+  # Login/authenticate with docker CLI
+  # NOTE: first setup encrypted env vars on docker hub site for the repo
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+  # Push all prod images to docker hub
+  - docker push crazypikis/multi-client
+  - docker push crazypikis/multi-nginx
+  - docker push crazypikis/multi-server
+  - docker push crazypikis/multi-worker
