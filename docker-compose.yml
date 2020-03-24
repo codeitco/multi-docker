@@ -33,10 +33,10 @@ services:
   client:
     build:
       dockerfile: Dockerfile.dev
-      context: ./clientreact
+      context: ./client
     volumes:
       - /app/node_modules
-      - ./clientreact:/app
+      - ./client:/app
   worker:
     environment:
       - REDIS_HOST=redis
