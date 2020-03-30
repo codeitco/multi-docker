@@ -27,3 +27,17 @@ after_success:
   - docker push crazypikis/multi-nginx
   - docker push crazypikis/multi-server
   - docker push crazypikis/multi-worker
+
+# AWS DEPLOYMENT VALUES
+deploy:
+  edge: true
+  provider: elasticbeanstalk
+  region: "us-east-1"
+  app: "multi-docker"
+  env: "MultiDocker-env"
+  bucket_name: "elasticbeanstalk-us-east-1-510799748847"
+  bucket_path: "docker-multi"
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
